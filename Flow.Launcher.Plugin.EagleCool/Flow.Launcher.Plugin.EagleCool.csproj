@@ -27,4 +27,16 @@
     <PackageReference Include="Flow.Launcher.Plugin" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Eagle\Eagle.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <_CopyItems Include="$(TargetDir)\*.*" />
+  </ItemGroup>
+  <Target Name="CopyDLLs" AfterTargets="Build">
+    <Message Text="Executing CopyDLLs task" Importance="High" />
+    <Copy SourceFiles="@(_CopyItems)" DestinationFolder="C:\Users\jason\AppData\Roaming\FlowLauncher\Plugins\EagleCool" />
+    <Message Text="Copied build files" Importance="High" />
+  </Target>
+
 </Project>
