@@ -1,0 +1,12 @@
+{
+    "ID": "D3F8C933-B5DB-4D77-A6DE-5C1B16CC42F9",
+    "ActionKeyword": "ec",
+    "Name": "EagleCool",
+    "Description": "A plugin for Eagle.cool to manage libraries",
+    "Author": "JasonStorey",
+    "Version": "1.0.0",
+    "Language": "csharp",
+    "Website": "https://github.com/JasonStorey/Flow.Launcher.Plugin.EagleCool",
+    "IcoPath": "icon.png",
+    "ExecuteFileName": "Flow.Launcher.Plugin.EagleCool.dll"
+}
