@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Eagle.Models;
+using Eagle.Models.Library;
+
 namespace Eagle
 {
-    public class EagleService : IDisposable, IEagleService
+    public class EagleService : IDisposable
     {
         
         public Task<IEnumerable<Folder>> GetFoldersAsync() => GetFoldersAsync(CancellationToken.None);
@@ -36,6 +39,8 @@ namespace Eagle
         
         #endregion
 
+        public bool IsRunning => Process.GetProcessesByName("Eagle").Length > 0;
+        
         public async Task SetFolderColor(string id, FolderColors color)=>
             await _api.UpdateFolder(id, new UpdateFolderRequest
             {
@@ -84,6 +89,14 @@ namespace Eagle
             return files;
         }
 
+
+        public async Task<LibrarySummary> GetLibrarySummary(CancellationToken token)
+        {
+            var response = await _api.GetLibrarySummary(token);
+            return ModelFactory.ToLibrarySummary(response);
+        }
+        
+        
         public string GetEagleExecutionPath()
         {
             var response = _api.Status(CancellationToken.None);
@@ -93,9 +106,9 @@ namespace Eagle
         public Task<List<File>> GetFilesWithAnyOfTheTags(CancellationToken token, params string[] tags) =>
             SearchAsync(token, A.Search.WithTags(tags));
 
-        public async Task<List<TagGroup>> GetAllTags()
+        public async Task<List<TagGroup>> GetAllTags(CancellationToken token)
         {
-            var info = (await _api.GetLibraryInfo(CancellationToken.None));
+            LibraryStatusResponse? info = (await _api.GetLibraryInfo(token));
             return info.data.tagsGroups.Select(ModelFactory.ToTagGroup).ToList();
         }
 
@@ -136,5 +149,22 @@ namespace Eagle
             await OpenLibrary(found.Path);
             return true;
         }
+
+        public async Task<List<Folder>> GetRootFolders(CancellationToken token)
+        {
+            var folders = await _api.GetFolders(token);
+            return folders.data.Select(ModelFactory.ToFolder).ToList();
+        }
+
+
+        public Task<List<Folder>> SearchFoldersAsync(string search, CancellationToken token) => GetRootFolders(token);
+
+        public bool Launch()
+        {
+            Process.Start(@"C:\Program Files (x86)\Eagle\Eagle.exe");
+            return true;
+        }
+
+        public void OpenToTag(string tag) => Process.Start("explorer.exe",$"eagle://tag/{tag}");
     }
 }

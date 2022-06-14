@@ -6,23 +6,11 @@ using System.Threading.Tasks;
 
 namespace Flow.Launcher.Plugin.EagleCool
 {
-    public abstract class BaseHandler : IPluginHandler
+    public abstract class BasePlugin : IPluginHandler
     {
-        public virtual void Enable()
-        {
-            
-        }
-
-        public virtual void Disable()
-        {
-        }
-
-        protected abstract void Init();
-
         public virtual Task InitAsync(PluginInitContext context)
         {
             _context = context;
-            Init();
             return Task.CompletedTask;
         }
 

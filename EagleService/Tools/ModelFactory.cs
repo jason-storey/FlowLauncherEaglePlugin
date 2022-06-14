@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using Eagle.Models;
 using Eagle.Models.Library;
@@ -71,6 +72,9 @@ namespace Eagle
             return newFile;
         }
         
+        
+        
+    
         public static Folder ToFolder(ListFolderResponse.Folder data)
         {
             var folder = new Folder
@@ -105,6 +109,28 @@ namespace Eagle
             JsonSerializer.Deserialize<ListFolderResponse.Folder>(json.GetRawText());
 
         public static TagGroup ToTagGroup(LibraryStatusResponse.TagsGroup data)
+        {
+            return new TagGroup
+            {
+                Id = data.id,
+                Name = data.name,
+                Tags = data.tags,
+                Color = data.color,
+            };
+        }
+
+        public static LibrarySummary ToLibrarySummary(LibraryStatusLightResponse? response)
+        {
+            var d =response.data;
+            return new LibrarySummary
+            {
+                Name = d.library.name,
+                Path = d.library.path,
+                Tags = d.tagsGroups.Select(ToTagGroup).ToList(),
+            };
+        }
+
+        static TagGroup ToTagGroup(LibraryStatusLightResponse.TagsGroup data)
         {
             return new TagGroup
             {

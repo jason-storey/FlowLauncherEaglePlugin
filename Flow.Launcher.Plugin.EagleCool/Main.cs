@@ -8,12 +8,7 @@ namespace Flow.Launcher.Plugin.EagleCool
 
     public class EagleCool : IAsyncPlugin,IDisposable,IContextMenu
     {
-        IPluginHandler Create()
-        {
-           // return new EagleDefaultPlugin();
-           //return new TestHandler();
-           return new EagleFancierPlugin();
-        }
+        IPluginHandler Create() => new EagleFancierPlugin();
 
         #region Plumbing
 
@@ -23,24 +18,15 @@ namespace Flow.Launcher.Plugin.EagleCool
         public async Task InitAsync(PluginInitContext context)
         {
             _handler = Create();
-            _handler.Enable();
             await _handler.InitAsync(context);
         }
-
-        public void Dispose()
-        {
-            _handler.Disable();
-            _handler.Dispose();
-        }
-
+        
+        public List<Result> LoadContextMenus(Result selectedResult) => _handler.ResultSelected(selectedResult);
+        
+        public void Dispose() => _handler.Dispose();
+        
         IPluginHandler _handler;
         
-
         #endregion
-
-        public List<Result> LoadContextMenus(Result selectedResult)
-        {
-            return _handler.ResultSelected(selectedResult);
-        }
     }
 }

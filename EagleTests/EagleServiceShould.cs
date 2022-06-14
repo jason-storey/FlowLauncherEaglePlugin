@@ -103,7 +103,7 @@ public class EagleServiceShould
     [Test]
     public async Task Get_List_of_tags_in_library()
     {
-        var tags = (await _service.GetAllTags());
+        var tags = (await _service.GetAllTags(CancellationToken.None));
         int i = 0;
     }
 
@@ -161,7 +161,13 @@ public class EagleServiceShould
       //  await _service.GotoLibrary("Delame");
         await _service.GotoLibrary("Audio");
     }
-    
+
+    [Test]
+    public async Task Return_Library_Summary()
+    {
+        var summary = await _service.GetLibrarySummary(CancellationToken.None);
+        int i = 0;
+    }
     
     
     

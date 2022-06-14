@@ -25,6 +25,9 @@ namespace Eagle
 
         public Task<LibraryStatusResponse?> GetLibraryInfo(CancellationToken token) => GetAsync<LibraryStatusResponse>("library/info",token);
 
+        public Task<LibraryStatusLightResponse?> GetLibrarySummary(CancellationToken token) =>
+            GetAsync<LibraryStatusLightResponse>("library/info", token);
+
         public async Task<RenameFolderResponse?> RenameFolder(RenameFolderRequest request,CancellationToken token) =>
             await PostAsync<RenameFolderRequest, RenameFolderResponse>("folder/rename", request,token);
 
@@ -116,5 +119,6 @@ namespace Eagle
 
         public async Task<List<string>> GetLibraries(CancellationToken token) => 
            (await GetAsync<LibraryListResponse>("library/history",token))?.data;
+        
     }
 }
