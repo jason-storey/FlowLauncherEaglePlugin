@@ -21,6 +21,6 @@ namespace Eagle
     {
         public string Name { get; set; }
         public string Path { get; set; }
-        public object Tags { get; set; }
+        public List<TagGroup> Tags { get; set; }
     }
 }

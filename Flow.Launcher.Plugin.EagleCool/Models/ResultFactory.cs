@@ -35,10 +35,9 @@ namespace Flow.Launcher.Plugin.EagleCool
             });
         }
         
-        public static async Task<List<Result>> GetTagGroupResults(EagleService eagle,CancellationToken token,Action<TagGroup> action)
+        public static async Task<List<Result>> GetTagGroupResults(EagleService eagle,CancellationToken token,LibrarySummary library,Action<TagGroup> action)
         {
-            var tagGroups = (await eagle.GetAllTags(token))
-                .OrderByDescending(x=>x.Tags.Count)
+            var tagGroups = library.Tags.OrderByDescending(x=>x.Tags.Count)
                 .ToList();
 
             return Results.Create(tagGroups, (t,r) =>
@@ -83,7 +82,7 @@ namespace Flow.Launcher.Plugin.EagleCool
                r.Action = x =>
                {
                    eagle.OpenToTag(t);
-                   messenger.Say("Still Trying to Figure this out",$"Launching Tag Search {t} that is.");
+                   messenger.Say("Eagle Api Limitation","Cannot open on specific tags with the API, go feature request the eagle.cool website!");
                    return true;
                };
            });

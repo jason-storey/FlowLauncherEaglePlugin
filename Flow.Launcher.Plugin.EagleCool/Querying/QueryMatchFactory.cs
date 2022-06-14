@@ -37,7 +37,7 @@ namespace Flow.Launcher.Plugin.EagleCool
             QueryMatch.Create(c=>GetOpenResults(_eagle,_token,_library),"o","f" );
 
         public QueryMatch TagGroup(Action<TagGroup> onSelected)=>
-            QueryMatch.Create(c=>GetTagGroupResults(_eagle,c,onSelected),"t" );
+            QueryMatch.Create(c=>GetTagGroupResults(_eagle,c,_library,onSelected),"t" );
         
         public async Task AddIfMatch(Query query, Results results,QueryMatch q)
         {
