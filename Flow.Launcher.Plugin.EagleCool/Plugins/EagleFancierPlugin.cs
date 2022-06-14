@@ -11,40 +11,35 @@ namespace Flow.Launcher.Plugin.EagleCool
 {
     public class EagleFancierPlugin : BasePlugin
     {
-        DateTimeOffset _lastLibraryRefresh;
+        Exception _lastCaptured;
         public override async Task InitAsync(PluginInitContext context)
         {
-            await base.InitAsync(context);
-            _messenger = new FlowLauncherApiMessenger(Api);
-            _eagle = new EagleService();
-            await RefreshLibrary(CancellationToken.None);
-            _runner = new EagleQueryRunner(_eagle, Api,_messenger,_library);
+            try
+            {
+                await base.InitAsync(context);
+                _eagle = new EagleService();
+                _messenger = new FlowLauncherApiMessenger(context.API);
+                _library = new LibrarySummary(); 
+                _runner = new EagleQueryRunner(_eagle,context.API, _messenger, _library);
+            
+            }
+            catch (Exception ex)
+            {
+                _lastCaptured = ex;
+            }
         }
 
-        async Task RefreshLibrary(CancellationToken token)
-        {
-            _library = await _eagle.GetLibrarySummary(token);
-            _lastLibraryRefresh = DateTimeOffset.UtcNow;
-        }
-
-        bool HasntRefreshedInAWhile() => (DateTimeOffset.Now - _lastLibraryRefresh).TotalSeconds > 20;
-        
         protected override async Task<List<Result>> GetResults(Query query, CancellationToken token)
         {
             try
             {
+                if (_runner == null) return new Results(FromException(_lastCaptured)) { "Failed to load Runner", };
                 return await _runner.Execute(query, token);
             }
             catch (Exception ex)
             {
                 return FromException(ex);
             }
-        }
-
-        public override async Task Reload()
-        {
-            if(_eagle != null)
-                _library = await _eagle.GetLibrarySummary(CancellationToken.None);
         }
 
         public override List<Result> ResultSelected(Result selected)

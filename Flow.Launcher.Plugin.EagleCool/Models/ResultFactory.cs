@@ -69,9 +69,14 @@ namespace Flow.Launcher.Plugin.EagleCool
        public static async Task<List<Result>> GetFolderQueryResults(EagleService eagle,Query query, CancellationToken cts)
         {
             var folders = await eagle.SearchFoldersAsync(query.Search,cts);
-            var r = new List<Result>();
-            var results = folders.Select(ToResult);
-            r.AddRange(results);
+            var r = new Results();
+            r.AddRange( folders.Select(ToResult));
+            foreach (var singleFolders in folders.Where(x=>x != null))
+            {
+                if(singleFolders.ChildFolders != null && singleFolders.ChildFolders.Count > 0)
+                    r.AddRange(singleFolders.ChildFolders.Select(ToResult));
+            }
+
             return r;
         }
 
@@ -167,7 +172,7 @@ namespace Flow.Launcher.Plugin.EagleCool
        }
 
 
-       public static List<Result> FromException(Exception ex)
+       public static List<Result> FromException(Exception ex,string message = "")
        {
            Exception baseEx = ex;
            while (baseEx.InnerException != null)
@@ -175,16 +180,22 @@ namespace Flow.Launcher.Plugin.EagleCool
                baseEx = ex;
            }
             
-           return new List<Result>
+           var r = new List<Result>
            {
                new()
                {
                    Title = $"Failed: {ex.Message}",
                    SubTitle = baseEx.Message,
+                   TitleToolTip = baseEx.StackTrace,
+                   SubTitleToolTip = ex.StackTrace,
                    AutoCompleteText = "",
                    IcoPath = "Images/exception.png"
                }
            };
+
+           if (!string.IsNullOrWhiteSpace(message))
+               r[0].Title = message;
+           return r;
        }
     }
 }

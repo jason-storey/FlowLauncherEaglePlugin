@@ -84,6 +84,6 @@ namespace Flow.Launcher.Plugin.EagleCool
             return results;
         }
 
-        public void AddRange(List<Result> results) => _results.AddRange(results);
+        public void AddRange(IEnumerable<Result> results) => _results.AddRange(results);
     }
 }

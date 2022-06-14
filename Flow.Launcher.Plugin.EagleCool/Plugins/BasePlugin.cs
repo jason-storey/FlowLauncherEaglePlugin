@@ -33,9 +33,7 @@ namespace Flow.Launcher.Plugin.EagleCool
             {
                 Title = entry
             }).ToList();
-
-
-        protected List<Result> Single(Result result) => new List<Result> { result }; 
+        
 
         protected abstract Task<List<Result>> GetResults(Query query,CancellationToken token);
 
@@ -50,8 +48,7 @@ namespace Flow.Launcher.Plugin.EagleCool
 
         public virtual Task Reload() => Task.CompletedTask;
 
-        protected IPublicAPI Api => _context.API;
-
+      
 
         protected List<Result> Empty() => new List<Result>();
         protected Task<List<Result>> EmptyTask() => Task.FromResult(new List<Result>());
