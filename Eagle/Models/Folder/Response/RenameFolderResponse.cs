@@ -42,4 +42,7 @@ namespace Eagle.Models
             public bool last { get; set; }
         }
     }
+    
+    
+    
 }

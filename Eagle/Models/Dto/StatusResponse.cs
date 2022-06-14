@@ -1,6 +1,6 @@
 ﻿namespace Eagle.Models
 {
-    public class ThumbnailResponse
+    public class StatusResponse
     {
         public string status { get; set; }
         public string data { get; set; }

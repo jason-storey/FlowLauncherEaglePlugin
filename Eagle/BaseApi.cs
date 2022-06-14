@@ -3,13 +3,14 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Eagle.Models.Library;
 
 namespace Eagle
 {
 
     public abstract class BaseApi : IDisposable
     {
-        public BaseApi(string host = "localhost", int port = 41595)
+        protected BaseApi(string host = "localhost", int port = 41595)
         {
             _builder = new UriBuilder
             {
@@ -29,7 +30,7 @@ namespace Eagle
             }
             catch (Exception ex)
             {
-                throw new EagleException("Eagle Failed to Response",ex);
+                throw new EagleException("Eagle Failed to Respond",ex);
             }
         }
         
@@ -37,12 +38,11 @@ namespace Eagle
         {
             try
             {
-                var full = uri.ToString();
                 return await _client.GetFromJsonAsync<T>(uri, token);
             }
             catch (Exception ex)
             {
-                throw new EagleException("Eagle Failed to Response",ex);
+                throw new EagleException("Eagle Failed to Respond",ex);
             }
         }
         
@@ -51,7 +51,8 @@ namespace Eagle
         {
             try
             {
-                var postResponse = await _client.PostAsJsonAsync(GetUri(path), data,token);
+                var uri = GetUri(path);
+                var postResponse = await _client.PostAsJsonAsync(uri, data,token);
                 postResponse.EnsureSuccessStatusCode();
                 return await postResponse.Content.ReadFromJsonAsync<TReceive>();
             }

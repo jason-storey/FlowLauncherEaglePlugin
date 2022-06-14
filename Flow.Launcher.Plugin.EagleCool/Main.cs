@@ -52,19 +52,19 @@ namespace Flow.Launcher.Plugin.EagleCool
             return results;
         }
 
-        private SearchItemsRequest CreateSearchRequest(Query query)
+        private Search CreateSearchRequest(Query query)
         {
             var tokens = query.Search;
 
             if (!tokens.Contains(' '))
-                return new SearchItemsRequest
+                return new Search
                 {
-                    Search = query.Search
+                    Keyword = query.Search
                 };
             
             var parts = tokens.Split(' ');
             
-            var req = new SearchItemsRequest();
+            var req = new Search();
             
             foreach (var part in parts) 
                 ApplyToRequest(ref req, part);
@@ -72,7 +72,7 @@ namespace Flow.Launcher.Plugin.EagleCool
             return req;
         }
 
-        private void ApplyToRequest(ref SearchItemsRequest req, string part)
+        private void ApplyToRequest(ref Search req, string part)
         {
             var filter = part.Split(':');
             if (filter.Length < 1)
@@ -186,14 +186,14 @@ namespace Flow.Launcher.Plugin.EagleCool
             return results.ToList();
         }
 
-        private Result ToResult(ListFolderResponse.Datum folder, int index) =>
+        private Result ToResult(ListFolderResponse.Folder folder, int index) =>
             new Result
             {
                 Title = folder.name,
                 SubTitle = folder.description,
             };
 
-        private bool MatchesQuery(ListFolderResponse.Datum folder, Query query)
+        private bool MatchesQuery(ListFolderResponse.Folder folder, Query query)
         {
             var searchString = folder.name + folder.description;
             return searchString.ToLower().Contains(query.Search.ToLower());

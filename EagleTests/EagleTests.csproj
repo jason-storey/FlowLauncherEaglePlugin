@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EagleService\EagleService.csproj" />
       <ProjectReference Include="..\Eagle\Eagle.csproj" />
     </ItemGroup>
 

@@ -21,9 +21,9 @@ public class ApiShould
     [Test]
     public async Task List_Search()
     {
-        var req = new SearchItemsRequest
+        var req = new Search
         {
-            Search = ""
+            Keyword = ""
         };
         var results = await _api.Search(req, CancellationToken.None);
 

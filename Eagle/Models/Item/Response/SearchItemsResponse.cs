@@ -9,9 +9,10 @@ namespace Eagle.Models
         
         public class ItemData
         {
+            public double duration { get; set; }
             public string id { get; set; }
             public string name { get; set; }
-            public int size { get; set; }
+            public double? size { get; set; }
             public string ext { get; set; }
             public List<object> tags { get; set; }
             public List<string> folders { get; set; }

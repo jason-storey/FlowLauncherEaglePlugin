@@ -6,9 +6,9 @@ namespace Eagle.Models
     public class ListFolderResponse
     {
         public string status { get; set; }
-        public List<Datum> data { get; set; }
+        public List<Folder> data { get; set; }
 
-        public class Datum
+        public class Folder
         {
             public string id { get; set; }
             public string name { get; set; }
