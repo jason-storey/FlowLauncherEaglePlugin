@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eagle;
+using static Flow.Launcher.Plugin.EagleCool.ResultModelFactory;
 
 namespace Flow.Launcher.Plugin.EagleCool
 {
@@ -69,7 +70,7 @@ namespace Flow.Launcher.Plugin.EagleCool
         {
             var folders = await eagle.SearchFoldersAsync(query.Search,cts);
             var r = new List<Result>();
-            var results = folders.Select(ResultModelFactory.ToResult);
+            var results = folders.Select(ToResult);
             r.AddRange(results);
             return r;
         }
@@ -87,6 +88,23 @@ namespace Flow.Launcher.Plugin.EagleCool
                };
            });
      
+       
+       
+       public static List<Result> HandleFolderSelection(FolderContext f, EagleService eagle, IMessenger messenger)
+       {
+           Results results = new Results();
+           if (!f.Folder.HasSubFolders)
+           {
+               results.Add(ToResult(f.Folder));
+               return results;
+           }
+
+           foreach (var child in f.Folder.ChildFolders) 
+               results.Add(ToResult(child));
+           
+           return results;
+       }
+       
         
        
        static async Task<List<Result>> GetItemQueryResults(Query query,EagleService eagle,IPublicAPI api, CancellationToken cts)
@@ -143,7 +161,7 @@ namespace Flow.Launcher.Plugin.EagleCool
            if (!includeFolders) return results;
             
            var topFolders = await eagle.GetRootFolders(token);
-           results.AddRange(topFolders.Select(ResultModelFactory.ToResult));
+           results.AddRange(topFolders.Select(ToResult));
 
            return results;
        }

@@ -15,6 +15,7 @@ namespace Flow.Launcher.Plugin.EagleCool
                     x.OpenInEagle();
                     return true;
                 },
+                ContextData = new FolderContext{ Folder = x},
                 IcoPath = "Images/folder.png"
             };
             

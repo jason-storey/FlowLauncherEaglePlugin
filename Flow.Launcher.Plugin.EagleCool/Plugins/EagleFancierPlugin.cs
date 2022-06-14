@@ -50,8 +50,10 @@ namespace Flow.Launcher.Plugin.EagleCool
         public override List<Result> ResultSelected(Result selected)
         {
             if (selected.ContextData is TagGroupContext tg) return HandleTagGroupSelection(tg,_eagle,_messenger);
+            if (selected.ContextData is FolderContext f) return HandleFolderSelection(f, _eagle, _messenger);
             return base.ResultSelected(selected);
         }
+
 
         #region Plumbing
 
