@@ -42,6 +42,15 @@ namespace Flow.Launcher.Plugin.EagleCool
                 return true;
             }});
         }
+        
+        public void Add(string title, string subtitle,string icon, Action action)
+        {
+            _results.Add(new Result{ Title = title,SubTitle = subtitle,IcoPath = icon,Action = x =>
+            {
+                action?.Invoke();
+                return true;
+            }});
+        }
 
         public Results(IEnumerable<Result> results) => _results = results.ToList();
 

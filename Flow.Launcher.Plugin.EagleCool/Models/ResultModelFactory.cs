@@ -14,7 +14,8 @@ namespace Flow.Launcher.Plugin.EagleCool
                 {
                     x.OpenInEagle();
                     return true;
-                }
+                },
+                IcoPath = "Images/folder.png"
             };
             
             FormatFolderSubtitleLine(x, r);

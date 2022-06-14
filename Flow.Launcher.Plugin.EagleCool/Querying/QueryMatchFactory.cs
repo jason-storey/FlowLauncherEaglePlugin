@@ -10,12 +10,14 @@ namespace Flow.Launcher.Plugin.EagleCool
     public class QueryMatchFactory
     {
         readonly CancellationToken _token;
+        readonly LibrarySummary _library;
         readonly EagleService _eagle;
         readonly IPublicAPI _api;
 
-        public QueryMatchFactory(CancellationToken token,EagleService eagle,IPublicAPI api)
+        public QueryMatchFactory(CancellationToken token,LibrarySummary library,EagleService eagle,IPublicAPI api)
         {
             _token = token;
+            _library = library;
             _eagle = eagle;
             _api = api;
         }
@@ -25,14 +27,14 @@ namespace Flow.Launcher.Plugin.EagleCool
             "lib", "library");
 
         public QueryMatch Open => QueryMatch.Create(c =>
-                GetOpenResults(_eagle,_token, includeFolders: false),
+                GetOpenResults(_eagle,_token, _library,includeFolders: false),
             "open", "go", "execute", "enter");
 
         public QueryMatch LibraryShortcut =>
             QueryMatch.Create(_=> GetLibraryChangeResults(_eagle), "l" );
        
         public QueryMatch OpenApplicationShortcut =>
-            QueryMatch.Create(c=>GetOpenResults(_eagle,_token),"o","f" );
+            QueryMatch.Create(c=>GetOpenResults(_eagle,_token,_library),"o","f" );
 
         public QueryMatch TagGroup(Action<TagGroup> onSelected)=>
             QueryMatch.Create(c=>GetTagGroupResults(_eagle,c,onSelected),"t" );

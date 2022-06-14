@@ -16,8 +16,8 @@ namespace Flow.Launcher.Plugin.EagleCool
             await base.InitAsync(context);
             _messenger = new FlowLauncherApiMessenger(Api);
             _eagle = new EagleService();
-            _runner = new EagleQueryRunner(_eagle, Api,_messenger);
             _library = await _eagle.GetLibrarySummary(CancellationToken.None);
+            _runner = new EagleQueryRunner(_eagle, Api,_messenger,_library);
         }
         
         protected override async Task<List<Result>> GetResults(Query query, CancellationToken token)

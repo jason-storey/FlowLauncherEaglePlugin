@@ -14,7 +14,7 @@ namespace Flow.Launcher.Plugin.EagleCool
         public static List<Result> GetLaunchEagleResults(EagleService eagle) =>
             new Results
             {
-                { "Eagle Is Not Running", "Would you like to launch it?", () => eagle.Launch() }
+                { "Eagle Is Not Running", "Would you like to launch it?", "Images/eagle.png", () => eagle.Launch() }
             };
         
         public static async Task<List<Result>> GetLibraryChangeResults(EagleService eagle)
@@ -26,6 +26,7 @@ namespace Flow.Launcher.Plugin.EagleCool
                 r.Title = l.Name;
                 r.SubTitle = l.Path;
                 r.ContextData = l.Path;
+                r.IcoPath = "Images/library.png";
                 r.Action = x =>
                 {
                     eagle.OpenLibrary(r.SubTitle);
@@ -44,6 +45,7 @@ namespace Flow.Launcher.Plugin.EagleCool
             {
                 r.Title = t.Name;
                 r.SubTitle = t.Tags.Count > 0 ? $"{t.Tags.Count} Items" : "[None]";
+                r.IcoPath = "Images/taggroup.png";
                 r.ContextData = new TagGroupContext
                 {
                     Group = t
@@ -77,6 +79,7 @@ namespace Flow.Launcher.Plugin.EagleCool
            Results.Create(tg.Group.Tags, (t, r) =>
            {
                r.Title = t;
+               r.IcoPath = "Images/tag.png";
                r.Action = x =>
                {
                    eagle.OpenToTag(t);
@@ -122,20 +125,18 @@ namespace Flow.Launcher.Plugin.EagleCool
            return trimmed;
        }
        
-       public static async Task<List<Result>> GetOpenResults(EagleService eagle,CancellationToken token,bool includeFolders = true)
+       public static async Task<List<Result>> GetOpenResults(EagleService eagle,CancellationToken token,LibrarySummary library, bool includeFolders = true)
        {
            List<Result> results = new List<Result>();
 
-           var info = eagle.GetCurrentLibrary();
-           var executionPath = eagle.GetEagleExecutionPath();
-            
            results.Add(new Result
            {
                Title = "Open Eagle",
-               SubTitle = $"Open Library '{info.Name}'",
+               SubTitle = $"Open Library '{library.Name}'",
+               IcoPath = "Images/eagle.png",
                Action = x =>
                {
-                   Process.Start(executionPath);
+                   Process.Start(library.Path);
                    return true;
                }
            });
@@ -163,7 +164,8 @@ namespace Flow.Launcher.Plugin.EagleCool
                {
                    Title = $"Failed: {ex.Message}",
                    SubTitle = baseEx.Message,
-                   AutoCompleteText = ""
+                   AutoCompleteText = "",
+                   IcoPath = "Images/exception.png"
                }
            };
        }

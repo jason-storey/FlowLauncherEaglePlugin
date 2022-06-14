@@ -16,7 +16,7 @@ namespace Flow.Launcher.Plugin.EagleCool
 
             Results results = new Results();
         
-            var queries = new QueryMatchFactory(token, _eagle, _api);
+            var queries = new QueryMatchFactory(token,_library, _eagle, _api);
 
             _queryLookup = new QueryLookup
             {
@@ -49,14 +49,16 @@ namespace Flow.Launcher.Plugin.EagleCool
 
         void Say(string title, string message) => _messenger.Say(title, message);
         
-        public EagleQueryRunner(EagleService eagle,IPublicAPI api,IMessenger messenger)
+        public EagleQueryRunner(EagleService eagle,IPublicAPI api,IMessenger messenger,LibrarySummary library)
         {
             _eagle = eagle;
             _api = api;
             _messenger = messenger;
+            _library = library;
         }
         
         readonly IMessenger _messenger;
+        readonly LibrarySummary _library;
         readonly EagleService _eagle;
         readonly IPublicAPI _api;
         QueryLookup _queryLookup;
