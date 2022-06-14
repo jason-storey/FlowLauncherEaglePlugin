@@ -138,5 +138,10 @@ namespace Flow.Launcher.Plugin.EagleCool
         {
             return new List<Result>();
         }
+
+        public Task Reload()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace Flow.Launcher.Plugin.EagleCool
         Task<List<Result>> QueryAsync(Query query, CancellationToken token);
         void Dispose();
         List<Result> ResultSelected(Result selected);
+        Task Reload();
     }
 }

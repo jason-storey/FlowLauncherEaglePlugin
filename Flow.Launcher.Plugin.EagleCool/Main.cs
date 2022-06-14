@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Flow.Launcher.Plugin.EagleCool
 {
 
-    public class EagleCool : IAsyncPlugin,IDisposable,IContextMenu
+    public class EagleCool : IAsyncPlugin,IDisposable,IContextMenu,IAsyncReloadable
     {
         IPluginHandler Create() => new EagleFancierPlugin();
 
@@ -22,11 +22,18 @@ namespace Flow.Launcher.Plugin.EagleCool
         }
         
         public List<Result> LoadContextMenus(Result selectedResult) => _handler.ResultSelected(selectedResult);
+
+        
+        public async Task ReloadDataAsync()
+        {
+            await _handler.Reload();
+        }
         
         public void Dispose() => _handler.Dispose();
         
         IPluginHandler _handler;
         
         #endregion
+
     }
 }

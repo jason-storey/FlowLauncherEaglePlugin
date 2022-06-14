@@ -11,14 +11,23 @@ namespace Flow.Launcher.Plugin.EagleCool
 {
     public class EagleFancierPlugin : BasePlugin
     {
+        DateTimeOffset _lastLibraryRefresh;
         public override async Task InitAsync(PluginInitContext context)
         {
             await base.InitAsync(context);
             _messenger = new FlowLauncherApiMessenger(Api);
             _eagle = new EagleService();
-            _library = await _eagle.GetLibrarySummary(CancellationToken.None);
+            await RefreshLibrary(CancellationToken.None);
             _runner = new EagleQueryRunner(_eagle, Api,_messenger,_library);
         }
+
+        async Task RefreshLibrary(CancellationToken token)
+        {
+            _library = await _eagle.GetLibrarySummary(token);
+            _lastLibraryRefresh = DateTimeOffset.UtcNow;
+        }
+
+        bool HasntRefreshedInAWhile() => (DateTimeOffset.Now - _lastLibraryRefresh).TotalSeconds > 20;
         
         protected override async Task<List<Result>> GetResults(Query query, CancellationToken token)
         {
@@ -30,6 +39,12 @@ namespace Flow.Launcher.Plugin.EagleCool
             {
                 return FromException(ex);
             }
+        }
+
+        public override async Task Reload()
+        {
+            if(_eagle != null)
+                _library = await _eagle.GetLibrarySummary(CancellationToken.None);
         }
 
         public override List<Result> ResultSelected(Result selected)

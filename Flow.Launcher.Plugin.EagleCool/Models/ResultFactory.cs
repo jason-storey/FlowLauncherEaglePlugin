@@ -37,9 +37,9 @@ namespace Flow.Launcher.Plugin.EagleCool
         
         public static async Task<List<Result>> GetTagGroupResults(EagleService eagle,CancellationToken token,LibrarySummary library,Action<TagGroup> action)
         {
-            var tagGroups = library.Tags.OrderByDescending(x=>x.Tags.Count)
-                .ToList();
-
+            library = await eagle.GetLibrarySummary(token);
+            var tagGroups = library.Tags.OrderByDescending(x => x.Tags.Count).ToList();
+    
             return Results.Create(tagGroups, (t,r) =>
             {
                 r.Title = t.Name;

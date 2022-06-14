@@ -48,6 +48,8 @@ namespace Flow.Launcher.Plugin.EagleCool
             return new List<Result>();
         }
 
+        public virtual Task Reload() => Task.CompletedTask;
+
         protected IPublicAPI Api => _context.API;
 
 
