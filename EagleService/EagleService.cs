@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Eagle.Models;
-using Eagle.Models.Library;
-
 namespace Eagle
 {
     public class EagleService : IDisposable
@@ -19,6 +17,9 @@ namespace Eagle
             return response is { status: "error" } ? Enumerable.Empty<Folder>() : response.data.Select(ModelFactory.ToFolder);
         }
 
+         public Task<List<File>> SearchAsync(CancellationToken token, string search) =>
+             SearchAsync(token, A.Search.WithKeyword(search));
+         
         public async Task<List<File>> SearchAsync(CancellationToken token,Search search)
         {
             var response = await _api.Search(search,token);
@@ -95,6 +96,12 @@ namespace Eagle
         public async Task OpenLibrary(string path) => await (_api.OpenLibrary(path,CancellationToken.None));
 
         public async Task<List<string>> GetLibraries() => await (_api.GetLibraries(CancellationToken.None));
+
+        public async Task<string> GetThumbnailPathFor(string fileId)
+        {
+            var result = (await _api.GetThumbnailFor(fileId, CancellationToken.None)).data;
+            return HttpUtility.UrlDecode(result);
+        }
     }
 
     public enum FolderColors
@@ -109,6 +116,4 @@ namespace Eagle
         public List<string> Tags { get; set; }
         public string Color { get; set; }
     }
-    
-    
 }

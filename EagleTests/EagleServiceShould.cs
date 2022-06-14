@@ -144,8 +144,16 @@ public class EagleServiceShould
         int i = 0;
         
     }
-    
-    
+
+
+    [Test]
+    public async Task Get_Icon_For_File()
+    {
+        const string FILE = "L4BE32V9H80VB";
+        var icon = await _service.GetThumbnailPathFor(FILE);
+
+        int i = 0;
+    }
     
     
     
