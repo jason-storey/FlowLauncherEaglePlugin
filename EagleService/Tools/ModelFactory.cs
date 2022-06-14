@@ -104,7 +104,7 @@ namespace Eagle
         static ListFolderResponse.Folder DeserializeFolder(JsonElement json) => 
             JsonSerializer.Deserialize<ListFolderResponse.Folder>(json.GetRawText());
 
-        public static TagGroup ToTagGroup(LibraryResponse.TagsGroup data)
+        public static TagGroup ToTagGroup(LibraryStatusResponse.TagsGroup data)
         {
             return new TagGroup
             {

@@ -23,7 +23,7 @@ namespace Eagle
             await PostAsync<UpdateFolderRequest, UpdateFolderResponse>("folder/update", request, token);
         }
 
-        public Task<LibraryResponse?> GetLibraryInfo(CancellationToken token) => GetAsync<LibraryResponse>("library/info",token);
+        public Task<LibraryStatusResponse?> GetLibraryInfo(CancellationToken token) => GetAsync<LibraryStatusResponse>("library/info",token);
 
         public async Task<RenameFolderResponse?> RenameFolder(RenameFolderRequest request,CancellationToken token) =>
             await PostAsync<RenameFolderRequest, RenameFolderResponse>("folder/rename", request,token);
@@ -111,7 +111,7 @@ namespace Eagle
         public Task<StatusResponse?> OpenLibrary(string path, CancellationToken token) => 
             PostAsync<LibrarySwitchRequest, StatusResponse>("library/switch", new LibrarySwitchRequest
             {
-                libraryPath = path
+                libraryPath = path.Replace('\\','/')
             },token);
 
         public async Task<List<string>> GetLibraries(CancellationToken token) => 

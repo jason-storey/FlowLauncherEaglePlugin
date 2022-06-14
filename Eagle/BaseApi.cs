@@ -52,7 +52,7 @@ namespace Eagle
             try
             {
                 var uri = GetUri(path);
-                var postResponse = await _client.PostAsJsonAsync(uri, data,token);
+                var postResponse = await _client.PostAsJsonAsync(uri, data, token);
                 postResponse.EnsureSuccessStatusCode();
                 return await postResponse.Content.ReadFromJsonAsync<TReceive>();
             }

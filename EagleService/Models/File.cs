@@ -23,4 +23,11 @@ namespace Eagle
 
         public void OpenInEagle() => Process.Start("explorer.exe",$"eagle://item/{Id}");
     }
+
+    public class Library
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
+    }
+    
 }

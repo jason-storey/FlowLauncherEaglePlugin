@@ -38,6 +38,28 @@ public class ApiShould
         var thumb = await _api.GetThumbnailFor(specific, CancellationToken.None);
         int i = 0;
     }
+
+
+    [Test]
+    public async Task List_Libraries()
+    {
+        var libs = await _api.GetLibraries(CancellationToken.None);
+
+        int index = 2;
+
+        await _api.OpenLibrary(libs[index], CancellationToken.None);
+        
+        
+        int i = 0;
+    }
+
+
+    [Test]
+    public async Task Get_Library_Info()
+    {
+        var response = await _api.GetLibraryInfo(CancellationToken.None);
+        int i = 0;
+    }
     
     
     

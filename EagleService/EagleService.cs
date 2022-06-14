@@ -7,7 +7,7 @@ using System.Web;
 using Eagle.Models;
 namespace Eagle
 {
-    public class EagleService : IDisposable
+    public class EagleService : IDisposable, IEagleService
     {
         
         public Task<IEnumerable<Folder>> GetFoldersAsync() => GetFoldersAsync(CancellationToken.None);
@@ -84,6 +84,12 @@ namespace Eagle
             return files;
         }
 
+        public string GetEagleExecutionPath()
+        {
+            var response = _api.Status(CancellationToken.None);
+            return response.Result.data.execPath;
+        }
+        
         public Task<List<File>> GetFilesWithAnyOfTheTags(CancellationToken token, params string[] tags) =>
             SearchAsync(token, A.Search.WithTags(tags));
 
@@ -94,26 +100,41 @@ namespace Eagle
         }
 
         public async Task OpenLibrary(string path) => await (_api.OpenLibrary(path,CancellationToken.None));
+        
+       public async Task<List<Library>> GetLibraries() => 
+           (await _api.GetLibraries(CancellationToken.None))
+            .Select(ToLibrary).ToList();
 
-        public async Task<List<string>> GetLibraries() => await (_api.GetLibraries(CancellationToken.None));
+       Library ToLibrary(string x)
+       {
+           return new Library
+           {
+               Name = SanitizeLibraryPathToName(x),
+               Path = x
+           };
+       }
+
+       public Library GetCurrentLibrary()
+       {
+           var info = _api.GetLibraryInfo(CancellationToken.None);
+           return ToLibrary(info.Result.data.library.path);
+       }
+
+       string SanitizeLibraryPathToName(string path) => path.Split('\\').Last().Replace(".library", "");
 
         public async Task<string> GetThumbnailPathFor(string fileId)
         {
             var result = (await _api.GetThumbnailFor(fileId, CancellationToken.None)).data;
             return HttpUtility.UrlDecode(result);
         }
-    }
 
-    public enum FolderColors
-    {
-        red,orange,green,yellow,aqua,blue,purple,pink
-    }
-    
-    public class TagGroup
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public List<string> Tags { get; set; }
-        public string Color { get; set; }
+        public async Task<bool> GotoLibrary(string keyword)
+        {
+            var libraries = await GetLibraries();
+            var found = libraries.FirstOrDefault(x => x.Name.Contains(keyword.ToLower().Trim()));
+            if (found == null) return false;
+            await OpenLibrary(found.Path);
+            return true;
+        }
     }
 }

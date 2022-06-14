@@ -2,128 +2,45 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Eagle;
-
+#pragma warning disable CS1591
 namespace Flow.Launcher.Plugin.EagleCool
 {
-    /// <summary>
-    /// Eagle Cool Plugin
-    /// </summary>
-    public class EagleCool : IAsyncPlugin,IDisposable
+
+    public class EagleCool : IAsyncPlugin,IDisposable,IContextMenu
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
+        IPluginHandler Create()
         {
-            _cancellationTokenSource?.Cancel();
-            var cts = _cancellationTokenSource = new CancellationTokenSource();
-            try
-            {
-                if (string.IsNullOrWhiteSpace(query.Search)) return NoResultsFound();
-                return await CreateSearchResults(query, cts);
-            }
-            catch (Exception ex)
-            {
-                return CreateFailureResults(ex);
-            }
+           // return new EagleDefaultPlugin();
+           //return new TestHandler();
+           return new EagleFancierPlugin();
         }
-
-        async Task<List<Result>> CreateSearchResults(Query query, CancellationTokenSource cts)
-        {
-           var files = await _eagle.SearchAsync(cts.Token, query.Search);
-           var results = new List<Result>();
-           foreach (var file in files) 
-               results.Add(await CreateResultFromFile(file));
-           return results;
-        }
-
-        async Task<Result> CreateResultFromFile(File file) =>
-            new()
-            {
-                Title = file.Name,
-                SubTitle = SanitizeAnnotation(file),
-                SubTitleToolTip = string.Join(" , ",file.Tags),
-                TitleToolTip  = string.Join(" , ",file.Tags),
-                IcoPath = await _eagle.GetThumbnailPathFor(file.Id),
-                Action = c =>
-                {
-                    file.OpenInEagle();
-                    return true;
-                }
-            };
-
-        static string SanitizeAnnotation(File file)
-        {
-            var trimmed = file.Annotation.Replace(Environment.NewLine, " ").Replace("\r","").Replace("\n","").Trim().Trim('\r','\n');
-            if( trimmed.Length > 100) trimmed = trimmed.Substring(0, 100) + "...";
-            return trimmed;
-        }
-
 
         #region Plumbing
 
-        PluginInitContext _context;
-        EagleService _eagle;
-        CancellationTokenSource _cancellationTokenSource;
-        
-        static List<Result> CreateFailureResults(Exception ex)
+        public Task<List<Result>> QueryAsync(Query query, CancellationToken token) => 
+            _handler.QueryAsync(query,token);
+
+        public async Task InitAsync(PluginInitContext context)
         {
-            Exception baseEx = ex;
-            while (baseEx.InnerException != null)
-            {
-                baseEx = ex;
-            }
-            
-            return new List<Result>
-            {
-                new()
-                {
-                    Title = $"Failed: {ex.Message}",
-                    SubTitle = baseEx.Message,
-                    AutoCompleteText = ""
-                }
-            };
+            _handler = Create();
+            _handler.Enable();
+            await _handler.InitAsync(context);
         }
 
-        List<Result> NoResultsFound()
+        public void Dispose()
         {
-            return new List<Result>
-            {
-                new()
-                {
-                    Title = "No Results Found",
-                    AutoCompleteText = ""
-                }
-            };
+            _handler.Disable();
+            _handler.Dispose();
         }
 
-    
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public Task InitAsync(PluginInitContext context)
-        {
-            _context = context;
-            _eagle = new EagleService();
-            return Task.CompletedTask;
-        }
-        
+        IPluginHandler _handler;
         
 
         #endregion
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose() => _eagle.Dispose();
-        
-        
+
+        public List<Result> LoadContextMenus(Result selectedResult)
+        {
+            return _handler.ResultSelected(selectedResult);
+        }
     }
 }

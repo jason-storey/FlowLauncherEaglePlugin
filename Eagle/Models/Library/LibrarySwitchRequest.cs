@@ -2,6 +2,6 @@
 {
     public class LibrarySwitchRequest
     {
-        public string libraryPath;
+        public string libraryPath { get; set; }
     }
 }

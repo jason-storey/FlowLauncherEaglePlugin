@@ -154,6 +154,14 @@ public class EagleServiceShould
 
         int i = 0;
     }
+
+    [Test]
+    public async Task Goto_Library_By_Name()
+    {
+      //  await _service.GotoLibrary("Delame");
+        await _service.GotoLibrary("Audio");
+    }
+    
     
     
     
